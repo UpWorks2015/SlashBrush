@@ -36,7 +36,7 @@ public class DamageScript: MonoBehaviour {
     if(_hp <= 0) {
       anim.SetBool("die",true);
       if(stageId != enemy.Length){
-        Invoke("StageChage", 4.5f);
+        Invoke("StageChange", 4.5f);
       }
     }
   }
@@ -49,7 +49,7 @@ public class DamageScript: MonoBehaviour {
       if(_hp <= 0) {
         anim.SetBool("die",true);
         if(stageId != enemy.Length-1){
-          Invoke("StageChage", 4.5f);
+          Invoke("StageChange", 4.5f);
         }
       }
     }else{
@@ -57,10 +57,10 @@ public class DamageScript: MonoBehaviour {
     }
   }
 
-  void StageChage()
+  void StageChange()
   {
     stageId++;
-    Debug.Log("StageChage");
+    Debug.Log("StageChange");
     _hp = 100;
     startFlg = true;
   }

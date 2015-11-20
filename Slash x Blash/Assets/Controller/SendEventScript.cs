@@ -7,6 +7,9 @@ public class SendEventScript : MonoBehaviour {
 	public static List<string> eventList = new List<string>();
 	// Chat用のテキスト
 	private string currentMessage = string.Empty;
+	public static string act;
+	public static bool actFlg = false;
+
 
 	// Use this for initialization
 	void Start () {
@@ -66,6 +69,25 @@ public class SendEventScript : MonoBehaviour {
 			// 引数のメッセージをローカルの配列にセットする。
 			eventList.Add(msg);
 			Debug.Log(msg.Split(':')[1]);
-			//EventScript.Action(msg.Split(':')[0],msg.Split(':')[1]);
+			SendAction(msg.Split(':')[0],msg.Split(':')[1]);
+	}
+
+	static public void SendAction(string player,string actType){
+		if(actType=="atk"){
+			Debug.Log(player + ":Attack");
+			act = "Attack";
+			actFlg = true;
+		}
+		else if(actType=="def"){
+			Debug.Log(player + ":Deffence");
+			act = "Deffence";
+			actFlg = true;
+		}
+		else if(actType=="sp"){
+			Debug.Log(player+":Magic");
+			act = "Magic";
+			actFlg = true;
+		}
+
 	}
 }

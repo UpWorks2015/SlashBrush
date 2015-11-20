@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
- 
+
 public class SelectMgr : MonoBehaviour {
- 
-	void Update () {
-		if (Input.GetMouseButtonDown (0)){
-			Application.LoadLevel ("SS1");
+
+	void Update(){
+		if(TitleMgr.tcamId == 1){
+			if(Input.GetMouseButtonDown (0)){
+				TitleMgr.tcamId = 2;
+				Debug.Log("detail");
+			}
 		}
 	}
 }

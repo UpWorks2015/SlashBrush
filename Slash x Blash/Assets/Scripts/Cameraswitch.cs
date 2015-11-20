@@ -36,6 +36,7 @@ public class Cameraswitch : MonoBehaviour {
         subsub_camera.enabled = true;
       }
     }
+  }
 
   public void OnMouseDown(){
     titleFlg = true;

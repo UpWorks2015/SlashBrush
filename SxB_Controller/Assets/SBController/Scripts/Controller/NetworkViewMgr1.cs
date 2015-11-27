@@ -58,11 +58,11 @@ public class NetworkViewMgr1 : MonoBehaviour {
                 Network.Connect(connectionIP, portNumber);
             }
 
-            // Serverになる場合
-            if ( GUILayout.Button("Server") )
-            {
-                Network.InitializeServer(4, portNumber);
-            }
+//            // Serverになる場合
+//            if ( GUILayout.Button("Server") )
+//            {
+//                Network.InitializeServer(4, portNumber);
+//            }
         }
     }
 

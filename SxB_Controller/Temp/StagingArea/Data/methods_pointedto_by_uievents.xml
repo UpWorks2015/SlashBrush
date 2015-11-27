@@ -1,0 +1,9 @@
+<linker>
+	<assembly fullname="Assembly-CSharp">
+		<type fullname="ButtonScript">
+			<method name="Atk"/>
+			<method name="Sp"/>
+			<method name="Def"/>
+		</type>
+	</assembly>
+</linker>

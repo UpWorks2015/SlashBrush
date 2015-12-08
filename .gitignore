@@ -34,7 +34,5 @@ gmcs.rsp*
 smcs.rsp*
 
 
-Assets/ApplicationGame/BaseballScene.unity
-Assets/ApplicationGame/BaseballScene.unity.meta
-Assets/ApplicationGame/matoate.unity
-Assets/ApplicationGame/matoate.unity.meta
+*.unity
+*.unity.meta

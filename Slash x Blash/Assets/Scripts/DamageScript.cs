@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class DamageScript: MonoBehaviour {
     private Animator anim;
-    public static int stageId = 0;
     bool locked = false;
+    int stageId = StageCameraSwitch.cameraId - 2;
     //public static int  targetEnemy = 0;
     // public GameObject hitEffect;
     // public GameObject hitEffect2;
@@ -51,9 +51,11 @@ public class DamageScript: MonoBehaviour {
         enemyHp = _slider.value;
         // randomPosX = Random.Range(-1.5f,1.5f);
         // randomPosY = Random.Range(-1.5f,1.5f);
-
+        Debug.Log("myHp => " + myHp);
+        Debug.Log("enemyHp => " + enemyHp);
         // 生きている間の処理
         if(myHp > 0) {
+            // Debug.Log("SendEventScript : " + SendEventScript.act);
             if(SendEventScript.actFlg){
                 // Damage(SendEventScript.act,DeathFlg);
                 Debug.Log(SendEventScript.act);
@@ -72,6 +74,7 @@ public class DamageScript: MonoBehaviour {
                         */
                     } else {
                         anim.SetBool("die",true);
+                        Debug.Log("Enemy down!");
                         Invoke("StageChange", 4.5f);
                     }
                 }
@@ -101,7 +104,7 @@ public class DamageScript: MonoBehaviour {
       //エフェクト発生 3
       enemyHp -= Damage(myStatus[0], enemyDef[stageId]);
       _slider.value = enemyHp;
-      Debug.Log("hit");
+      Debug.Log("Hit");
       if(enemyHp > 0) {
 
       } else {
@@ -116,21 +119,29 @@ public class DamageScript: MonoBehaviour {
 
     void StageChange()
     {
-        if (!locked) {
-            stageId++;
-            if (stageId > 2) stageId = 2;
-        }
-        Lock();
+        DisableCamera(StageCameraSwitch.cameraNames[StageCameraSwitch.cameraId]);
+        stageId++;
+        StageCameraSwitch.cameraId++;
+        Debug.Log("stageId: " + stageId + ", cameraId: " + StageCameraSwitch.cameraId);
+        EnableCamera(StageCameraSwitch.cameraNames[StageCameraSwitch.cameraId]);
     }
 
-    // stageIdが増加しつづけるのを防ぐ
-    void Lock()
-    {
-        if(locked) {
-            locked = false;
-            return;
-        }
-        locked = true;
+    /* func DisableCamera
+    * カメラをオフにする
+    * @params カメラ名
+    */
+    private void DisableCamera(string name) {
+        Camera _camera = GameObject.Find(name).GetComponent<Camera>();
+        _camera.enabled = false;
+    }
+
+    /* func EnableCamera
+    * カメラをオンにする
+    * @params カメラ名
+    */
+    private void EnableCamera(string name) {
+        Camera _camera = GameObject.Find(name).GetComponent<Camera>();
+        _camera.enabled = true;
     }
 
   //   void ParticleDestroy()

@@ -13,6 +13,6 @@ public class TitleMgr : MonoBehaviour {
 				tcamId = 1;
 				Debug.Log("stageselect");
 			}
-		}	
+		}
 	}
 }

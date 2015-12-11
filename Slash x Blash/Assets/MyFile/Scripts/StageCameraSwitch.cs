@@ -2,47 +2,14 @@
 using System.Collections;
 
 public class StageCameraSwitch : MonoBehaviour {
-	public Camera stagedetail_camera;
-	public Camera main_camera;
-	public Camera sub_camera;
-	public Camera subsub_camera;
-	public Camera clear_camera;
+	public static int cameraId = 2;
+	public static string[] cameraNames = new string[] {"Title", "StageSelect", "Inu1", "Momo2", "Baba3", "Buta1", "Goku2", "Sanzo3", "Kobito1", "Mama2", "Oji3", "Clear", "GameOver"};
 
 	// Use this for initialization
 	void Start () {
-		main_camera.enabled = false;
-		sub_camera.enabled = false;
-		subsub_camera.enabled = false;
-		clear_camera.enabled = false;
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if(TitleMgr.sceneId == 1){
-			if (DamageScript.stageId == 0) {
-				main_camera.enabled = true;
-				sub_camera.enabled = false;
-				subsub_camera.enabled = false;
-				clear_camera.enabled = false;
-			} 
-			else if (DamageScript.stageId == 1) {
-				main_camera.enabled = false;
-				sub_camera.enabled = true;
-				subsub_camera.enabled = false;
-				clear_camera.enabled = false;
-			}
-			else if (DamageScript.stageId == 2){
-				main_camera.enabled = false;
-				sub_camera.enabled = false;
-				subsub_camera.enabled = true;
-				clear_camera.enabled = false;
-			}
-			else if (DamageScript.stageId == 3){
-				main_camera.enabled = false;
-				sub_camera.enabled = false;
-				subsub_camera.enabled = false;
-				clear_camera.enabled = true;
-			}
-		}	
 	}
 }

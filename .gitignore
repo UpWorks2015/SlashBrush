@@ -1,14 +1,11 @@
-# =============== #
-# Unity generated #
-# =============== #
-Temp/
-Obj/
+# ---------------[ Unity generated ]------------------ #
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
 UnityGenerated/
-Library/
-
-# ===================================== #
-# Visual Studio / MonoDevelop generated #
-# ===================================== #
+  
+# ----[ Visual Studio / MonoDevelop generated ]------- #
+  
 ExportedObj/
 *.svd
 *.userprefs
@@ -19,10 +16,8 @@ ExportedObj/
 *.user
 *.unityproj
 *.booproj
-
-# ============ #
-# OS generated #
-# ============ #
+  
+# -------------[ OS generated ]------------------------ #
 .DS_Store
 .DS_Store?
 ._*
@@ -31,11 +26,13 @@ ExportedObj/
 Icon?
 ehthumbs.db
 Thumbs.db
+ 
+# -------------[ Build ]------------------------ #
+#*.html
+AppDebugUserId.text
+gmcs.rsp*
+smcs.rsp*
 
-# ============ #
-# for others   #
-# ============ #
 
-*.log #log files, for some plugins
-*.pyc #python bytecode cache, for some plugins.
-sysinfo.txt #Unity3D Generated File On Crash Reports
+*.unity
+*.unity.meta

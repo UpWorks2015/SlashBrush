@@ -5,11 +5,12 @@ using UnityEngine.UI;
 public class DamageScript: MonoBehaviour {
     private Animator anim;
     bool locked = false;
-    int stageId = StageCameraSwitch.cameraId - 2;
-
+    int stageId = CameraManager.cameraId;
+    int camId = CameraManager.cameraId;
     Slider _slider;
     float _point;
     bool deathFlg = false;
+    bool changeFlg = false;
 
     // 自分ステータス
     float myHp;
@@ -19,8 +20,8 @@ public class DamageScript: MonoBehaviour {
     // 敵ステータス
     string[] enemy = new string[] { "InuSlider", "SaruSlider", "KijiSlider" };
     float enemyHp;
-    float[] enemyAtk = new float[]{ 120f, 200f, 200000f};
-    float[] enemyDef = new float[]{ 50f, 80f, 500000f};
+    float[] enemyAtk = new float[]{ 100f, 100f, 100f};
+    float[] enemyDef = new float[]{ 50f, 80f, 100f};
 
     /* スコア */
     float myScore = 0;
@@ -31,8 +32,8 @@ public class DamageScript: MonoBehaviour {
     void Start () {
         anim = GetComponent<Animator>();
         _slider = GameObject.Find(enemy[stageId]).GetComponent<Slider>();
-        // _slider.maxValue = enemyHp[stageId];
         myHp = 1000f;
+        camId = 2;
     }
 
     void Update () {
@@ -77,9 +78,12 @@ public class DamageScript: MonoBehaviour {
                     enemyScore =  Damage(enemyAtk[stageId], myStatus[1]);
                 }
             } else {
-                anim.SetBool("die",true);
-                Debug.Log("Enemy down!");
-                Invoke("StageChange", 4.5f);
+                if(!deathFlg){
+                    deathFlg = true;
+                    anim.SetBool("die",true);
+                    Debug.Log("Enemy down!");
+                    StartCoroutine(isStageChange());
+                }
             }
             //-------------------- ダメージ計算 ----------------------//
             myHp -= (enemyScore / myDefRate);
@@ -87,6 +91,7 @@ public class DamageScript: MonoBehaviour {
             enemyHp -= myScore / enemyDefRate;
             _slider.value = enemyHp;
         } else {
+            CameraManager.cameraId = 12;
             Debug.Log("GameOver");
         }
     }
@@ -95,12 +100,6 @@ public class DamageScript: MonoBehaviour {
         myScore = Damage(myStatus[0], enemyDef[stageId]);
         enemyHp -= myScore / enemyDefRate;
         _slider.value = enemyHp;
-        if(enemyHp > 0) {
-
-        } else {
-            anim.SetBool("die",true);
-            Invoke("StageChange", 4.5f);
-        }
     }
 
     float Damage(float atk, float def) {
@@ -111,35 +110,17 @@ public class DamageScript: MonoBehaviour {
         return myDef / enemyAtk;
     }
 
-    void StageChange()
+    IEnumerator isStageChange()
     {
-        DisableCamera(StageCameraSwitch.cameraNames[StageCameraSwitch.cameraId]);
-        stageId++;
-        StageCameraSwitch.cameraId++;
-        Debug.Log("stageId: " + stageId + ", cameraId: " + StageCameraSwitch.cameraId);
-        EnableCamera(StageCameraSwitch.cameraNames[StageCameraSwitch.cameraId]);
+        if(!changeFlg) {
+            changeFlg = true;
+            yield return new WaitForSeconds(3.0f);
+            deathFlg = false;
+            changeFlg = false;
+            stageId++;
+            camId++;
+            CameraManager.cameraId = camId;
+            Debug.Log("stageId: " + stageId + ", cameraId: " + CameraManager.cameraId);
+        }
     }
-
-    /* func DisableCamera
-    * カメラをオフにする
-    * @params カメラ名
-    */
-    private void DisableCamera(string name) {
-        Camera _camera = GameObject.Find(name).GetComponent<Camera>();
-        _camera.enabled = false;
-    }
-
-    /* func EnableCamera
-    * カメラをオンにする
-    * @params カメラ名
-    */
-    private void EnableCamera(string name) {
-        Camera _camera = GameObject.Find(name).GetComponent<Camera>();
-        _camera.enabled = true;
-    }
-
-  //   void ParticleDestroy()
-	// {
-        // Destroy (AtkParticle);
-  //   }
 }

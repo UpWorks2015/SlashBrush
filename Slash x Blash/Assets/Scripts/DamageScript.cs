@@ -64,6 +64,7 @@ public class DamageScript: MonoBehaviour {
                             myDefRate = getDefRate(myStatus[1], enemyDef[stageId]);
                             break;
                         case "Magic":
+                            myScore = myStatus[2];
                             break;
                     }
                     SendEventScript.act = null;

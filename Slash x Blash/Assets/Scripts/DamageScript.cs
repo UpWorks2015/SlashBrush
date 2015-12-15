@@ -18,7 +18,7 @@ public class DamageScript: MonoBehaviour {
     float[] myStatus = {100f, 100f, 100f};
 
     // 敵ステータス
-    string[] enemy = new string[] { "InuSlider", "SaruSlider", "KijiSlider", "ButaSlider", "songokuSlider", "sanzouSlider", "KobitoSlider", "MaMaSlider", "OujiSlider"};
+    string[] enemy = new string[] { "InuSlider", "SaruSlider", "KijiSlider", "ButaSlider", "songokuSlider", "sanzouSlider", "KobitoSlider", "MamaSlider", "OujiSlider"};
     float enemyHp;
     float[] enemyAtk = new float[]{ 30f, 40f, 50f, 60f, 70f, 100f, 180f, 260f, 1000f};
     float[] enemyDef = new float[]{ 50f, 80f, 90f, 100f, 140f, 180f, 220f, 260f, 430f};
@@ -39,13 +39,12 @@ public class DamageScript: MonoBehaviour {
     void Update () {
         camId = CameraManager.cameraId;
         Debug.Log("camId : " + camId + ", stageId : " + stageId);
-        if (CameraManager.cameraId >= 2) {
+        if (CameraManager.cameraId >= 2 && CameraManager.cameraId < 12) {
             _slider = GameObject.Find(enemy[stageId]).GetComponent<Slider>();
-            Debug.Log("敵 :" + _slider.name + ", myScore : " + myScore + ", myHp : " + myHp);
+            Debug.Log("敵 :" + _slider.name + ", myScore : " + myScore + ", myHp : " + myHp + ", myStatus : " + myStatus[0] + " " + myStatus[1]);
             enemyHp = _slider.value;
             // randomPosX = Random.Range(-1.5f,1.5f);
             // randomPosY = Random.Range(-1.5f,1.5f);
-            // Debug.Log("myHp => " + myHp + ", enemyHp => " + enemyHp);
             // 生きている間の処理
             if(myHp > 0) {
                 myScore = 0;
@@ -74,10 +73,11 @@ public class DamageScript: MonoBehaviour {
                 if(enemyHp > 0) {
                     if(Random.value >= 0.995) {
                         enemyScore =  Damage(enemyAtk[stageId], myStatus[1]);
+                        Debug.Log("enemyScore : " + enemyScore);
                     }
                     //-------------------- ダメージ計算 ----------------------//
-                    myHp -= enemyScore / myDefRate;
-                    enemyHp -= myScore / enemyDefRate;
+                    myHp -= (enemyScore / myDefRate);
+                    enemyHp -= (myScore / enemyDefRate);
                     _slider.value = enemyHp;
                 } else {
                     if(!deathFlg){
@@ -105,11 +105,16 @@ public class DamageScript: MonoBehaviour {
     }
 
     float Damage(float atk, float def) {
-        return atk * atk / def - def;
+        float rate = 1.0f;
+        if(Random.value >= 0.99995) {
+            rate = 1.5f;
+            Debug.Log(System.DateTime.Now + "Critical Hit!!!!!!");
+        }
+        return Mathf.Abs(atk * atk / def - def) * (1.0f + Random.value) * rate;
     }
 
     float getDefRate(float myDef, float enemyAtk) {
-        return myDef / enemyAtk;
+        return Mathf.Abs(myDef / enemyAtk);
     }
 
     IEnumerator isStageChange()
@@ -123,8 +128,8 @@ public class DamageScript: MonoBehaviour {
             camId++;
             CameraManager.cameraId = camId;
             enemyHp = _slider.value;
-            myStatus[0] = myStatus[0] + 200;
-            myStatus[1] = myStatus[1] + 200;
+            myStatus[0] = myStatus[0] * 1.2f;
+            myStatus[1] = myStatus[1] * 1.2f;
             Debug.Log("camId =>" + CameraManager.cameraId + ", stageId => " + stageId);
         }
     }

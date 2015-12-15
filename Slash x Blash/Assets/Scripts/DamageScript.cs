@@ -6,7 +6,7 @@ public class DamageScript: MonoBehaviour {
     private Animator anim;
     bool locked = false;
 
-	int camId;
+	int camId = CameraManager.cameraId;
 	int stageId = 0;
 
     Slider _slider;
@@ -34,24 +34,27 @@ public class DamageScript: MonoBehaviour {
     void Init() {
         myHp = 1000f;
         camId = CameraManager.cameraId;
-        stageId = 0;
+        stageId = camId - 2;
         foreach(var x in enemy) {
             _slider = GameObject.Find(x).GetComponent<Slider>();
             _slider.value = _slider.maxValue;
         }
+        Debug.Log(System.DateTime.Now + " Init()");
     }
 
     void Start () {
         anim = GetComponent<Animator>();
-        _slider = GameObject.Find(enemy[stageId]).GetComponent<Slider>();
+        _slider = GameObject.Find(enemy[0]).GetComponent<Slider>();
         myHp = 1000f;
         enemyHp = _slider.value;
     }
 
     void Update () {
         camId = CameraManager.cameraId;
+        stageId = camId - 2;
         Debug.Log("camId : " + camId + ", stageId : " + stageId);
-        if (CameraManager.cameraId >= 2 && CameraManager.cameraId < 12) {
+        if (camId == 0) Init();
+        if (camId >= 2 && camId < 12) {
             _slider = GameObject.Find(enemy[stageId]).GetComponent<Slider>();
             Debug.Log("敵 :" + _slider.name + ", myScore : " + myScore + ", myHp : " + myHp + ", myStatus : " + myStatus[0] + " " + myStatus[1]);
             enemyHp = _slider.value;
@@ -89,6 +92,7 @@ public class DamageScript: MonoBehaviour {
                     }
                     //-------------------- ダメージ計算 ----------------------//
                     myHp -= (enemyScore / myDefRate);
+                    Debug.Log(System.DateTime.Now + " : damaged => " + enemyScore / myDefRate);
                     enemyHp -= (myScore / enemyDefRate);
                     _slider.value = enemyHp;
                 } else {
@@ -112,7 +116,7 @@ public class DamageScript: MonoBehaviour {
             enemyHp -= myScore / enemyDefRate;
             _slider.value = enemyHp;
         } else {
-            Debug.Log("オーバーキル");
+            Debug.Log(System.DateTime.Now + " オーバーキル");
         }
     }
 
@@ -142,7 +146,7 @@ public class DamageScript: MonoBehaviour {
             enemyHp = _slider.value;
             myStatus[0] = myStatus[0] * 1.2f;
             myStatus[1] = myStatus[1] * 1.2f;
-            Debug.Log("camId =>" + CameraManager.cameraId + ", stageId => " + stageId);
+            Debug.Log(System.DateTime.Now + " camId =>" + CameraManager.cameraId + ", stageId => " + stageId);
         }
     }
 }

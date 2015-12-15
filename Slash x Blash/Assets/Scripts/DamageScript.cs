@@ -5,7 +5,9 @@ using UnityEngine.UI;
 public class DamageScript: MonoBehaviour {
     private Animator anim;
     bool locked = false;
-    int stageId = StageCameraSwitch.cameraId - 2;
+	int camId = CameraManager.cameraId;
+	int stageId = CameraManager.cameraId - 2;
+
 
     Slider _slider;
     float _point;

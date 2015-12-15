@@ -5,8 +5,10 @@ using UnityEngine.UI;
 public class DamageScript: MonoBehaviour {
     private Animator anim;
     bool locked = false;
-    int stageId = 0;
-    int camId;
+
+	int camId = CameraManager.cameraId;
+	int stageId = CameraManager.cameraId - 2;
+		
     Slider _slider;
     float _point;
     bool deathFlg = false;

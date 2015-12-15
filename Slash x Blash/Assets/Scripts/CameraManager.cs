@@ -39,11 +39,27 @@ public class CameraManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update (){
+		Debug.Log(cameraId);
 		if (Input.GetKeyDown ("space")) {
 			Debug.Log ("Change");
 			cameraId++;
 		}
-		if (cameraId == 1) {
+		if (cameraId == 0) {
+			TitleCam.enabled = true;
+			StageSelectCam.enabled = false;
+			Inu1Cam.enabled = false;
+			Momo2Cam.enabled = false;
+			Baba3Cam.enabled = false;
+			Buta1Cam.enabled = false;
+			Goku2Cam.enabled = false;
+			Sanzo3Cam.enabled = false;
+			Kobito1Cam.enabled = false;
+			Mama2Cam.enabled = false;
+			Ouji3Cam.enabled = false;
+			ClearCam.enabled = false;
+			GameOverCam.enabled = false;
+
+		} else if (cameraId == 1) {
 			//StageSelect
 			TitleCam.enabled = false;
 			StageSelectCam.enabled = true;
@@ -218,6 +234,7 @@ public class CameraManager : MonoBehaviour {
 			Ouji3Cam.enabled = false;
 			ClearCam.enabled = true;
 			GameOverCam.enabled = false;
+			StartCoroutine (toTitle());
 
 		}else if (cameraId == 12) {
 			//GameOver
@@ -234,7 +251,29 @@ public class CameraManager : MonoBehaviour {
 			Ouji3Cam.enabled = false;
 			ClearCam.enabled = false;
 			GameOverCam.enabled = true;
+			StartCoroutine (toTitle());
 		}
 
 	}
+
+	IEnumerator toTitle(){
+		yield return new WaitForSeconds(2f);
+		cameraId = 0;
+	}
+
+	//------- to use stage select --------//
+
+	public void toMomotaro(){
+		cameraId = 2;
+	}
+
+	public void toSaiyuki(){
+		cameraId = 5;
+	}
+
+	public void toSirayuki(){
+		cameraId = 8;
+	}
+	
+
 }

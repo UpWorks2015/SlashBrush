@@ -6,22 +6,6 @@ public class DamageScript: MonoBehaviour {
     private Animator anim;
     bool locked = false;
     int stageId = StageCameraSwitch.cameraId - 2;
-    //public static int  targetEnemy = 0;
-    // public GameObject hitEffect;
-    // public GameObject hitEffect2;
-    // public GameObject hitEffect3;
-    // public AudioClip  hitsound;
-    // public AudioClip  hitsound2;
-    // public AudioClip  hitsound3;
-    // public AudioSource speaker;
-    // public AudioSource speaker2;
-    // public AudioSource speaker3;
-
-    // GameObject AtkParticle;
-    // GameObject AtkParticle2;
-    // GameObject Atkparticle3;
-    // float randomPosX;
-    // float randomPosY;
 
     Slider _slider;
     float _point;
@@ -37,7 +21,12 @@ public class DamageScript: MonoBehaviour {
     float enemyHp;
     float[] enemyAtk = new float[]{ 120f, 200f, 200000f};
     float[] enemyDef = new float[]{ 50f, 80f, 500000f};
-    float damage = 0;
+
+    /* スコア */
+    float myScore = 0;
+    float enemyScore = 0;
+    float myDefRate = 1;
+    float enemyDefRate = 1;
 
     void Start () {
         anim = GetComponent<Animator>();
@@ -49,6 +38,11 @@ public class DamageScript: MonoBehaviour {
     void Update () {
         _slider = GameObject.Find(enemy[stageId]).GetComponent<Slider>();
         enemyHp = _slider.value;
+        myScore = 0;
+        enemyScore = 0;
+        myDefRate = 1;
+        enemyDefRate = 1;
+
         // randomPosX = Random.Range(-1.5f,1.5f);
         // randomPosY = Random.Range(-1.5f,1.5f);
         Debug.Log("myHp => " + myHp);
@@ -59,62 +53,62 @@ public class DamageScript: MonoBehaviour {
             if(SendEventScript.actFlg){
                 // Damage(SendEventScript.act,DeathFlg);
                 Debug.Log(SendEventScript.act);
-                if(SendEventScript.act == "Attack") {
-                    damage = Damage(myStatus[0], enemyDef[stageId]);
-                    enemyHp -= damage;
-                    _slider.value = enemyHp;
-                    // 敵が生きている間の処理
-                    if(enemyHp > 0) {
-                        // デバッグ用に自分を無敵にする
-                        /*
-                        if(Random.value >= 0.5) {
-                            damage = Damage(enemyAtk[stageId], myStatus[1]);
-                            myHp -= damage;
-                        }
-                        */
-                    } else {
-                        anim.SetBool("die",true);
-                        Debug.Log("Enemy down!");
-                        Invoke("StageChange", 4.5f);
-                    }
+                //----------------------- コマンド処理 ------------------------//
+                switch(SendEventScript.act)
+                {
+                    case "Attack":
+                        myScore = Damage(myStatus[0], enemyDef[stageId]);
+                        break;
+                    case "Defence":
+                        Debug.Log("Using Defence Command");
+                        myDefRate = getDefRate(myStatus[1], enemyDef[stageId]);
+                        break;
+                    case "Magic":
+                        Debug.Log("Using Magic Command");
+                        break;
                 }
                 SendEventScript.act = null;
                 SendEventScript.actFlg = false;
             }
+            //----------------- 敵行動ロジック --------------------//
+            if(enemyHp > 0) {
+                if(Random.value >= 0.995) {
+                    Debug.Log("敵の攻撃");
+                    enemyScore =  Damage(enemyAtk[stageId], myStatus[1]);
+                }
+            } else {
+                anim.SetBool("die",true);
+                Debug.Log("Enemy down!");
+                Invoke("StageChange", 4.5f);
+            }
+            //-------------------- ダメージ計算 ----------------------//
+            myHp -= (enemyScore / myDefRate);
+            Debug.Log(enemyScore / myDefRate);
+            enemyHp -= myScore / enemyDefRate;
+            _slider.value = enemyHp;
         } else {
             Debug.Log("GameOver");
         }
     }
 
-  //public void OnMouseDown (){
-		//_hp -= 20f;
-		//AtkParticle = Instantiate (hitEffect, new Vector3( transform.position.x+randomPosX,transform.position.y+randomPosY, transform.position.z+1),Quaternion.identity) as GameObject;
-		//Invoke ("ParticleDestroy", 0.3f);
-		//speaker.PlayOneShot(hitsound);
-		// エフェクト発生
-		//AtkParticle2 = Instantiate (hitEffect2, new Vector3( transform.position.x+randomPosX,transform.position.y+randomPosY, transform.position.z+1),Quaternion.identity) as GameObject;
-		//Invoke ("ParticleDestroy", 0.1f);
-		//speaker2.PlayOneShot(hitsound2);
-		// エフェクト発生 2
-	//}
-	public void OnMouseDown (){
-      // Atkparticle3 = Instantiate (hitEffect3, new Vector3( transform.position.x,transform.position.y,transform.position.z+2),Quaternion.identity) as GameObject;
-      // Invoke ("ParticleDestroy", 0.01f);
-      // speaker3.PlayOneShot(hitsound3);
-      //エフェクト発生 3
-      enemyHp -= Damage(myStatus[0], enemyDef[stageId]);
-      _slider.value = enemyHp;
-      Debug.Log("Hit");
-      if(enemyHp > 0) {
+    public void OnMouseDown (){
+        myScore = Damage(myStatus[0], enemyDef[stageId]);
+        enemyHp -= myScore / enemyDefRate;
+        _slider.value = enemyHp;
+        if(enemyHp > 0) {
 
-      } else {
-          anim.SetBool("die",true);
-          Invoke("StageChange", 4.5f);
-      }
-  }
+        } else {
+            anim.SetBool("die",true);
+            Invoke("StageChange", 4.5f);
+        }
+    }
 
     float Damage(float atk, float def) {
         return atk * atk / def - def;
+    }
+
+    float getDefRate(float myDef, float enemyAtk) {
+        return myDef / enemyAtk;
     }
 
     void StageChange()

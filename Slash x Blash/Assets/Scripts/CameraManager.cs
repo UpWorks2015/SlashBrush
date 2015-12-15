@@ -44,6 +44,14 @@ public class CameraManager : MonoBehaviour {
 			Debug.Log ("Change");
 			cameraId++;
 		}
+
+		//------- change depth --------//
+		if (cameraId == 1) {
+			StageSelectCam.depth = 1;
+		} else {
+			StageSelectCam.depth = 0;
+		}
+
 		if (cameraId == 0) {
 			TitleCam.enabled = true;
 			StageSelectCam.enabled = false;

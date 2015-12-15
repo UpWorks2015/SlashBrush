@@ -79,8 +79,8 @@ public class SendEventScript : MonoBehaviour {
 			actFlg = true;
 		}
 		else if(actType=="def"){
-			Debug.Log(player + ":Deffence");
-			act = "Deffence";
+			Debug.Log(player + ":Defence");
+			act = "Defence";
 			actFlg = true;
 		}
 		else if(actType=="sp"){

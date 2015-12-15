@@ -6,6 +6,7 @@ public class DamageScript: MonoBehaviour {
     private Animator anim;
     bool locked = false;
     int stageId = 0;
+    int camId;
     Slider _slider;
     float _point;
     bool deathFlg = false;
@@ -36,13 +37,15 @@ public class DamageScript: MonoBehaviour {
     }
 
     void Update () {
-        Debug.Log("camId : " + CameraManager.cameraId );
+        camId = CameraManager.cameraId;
+        Debug.Log("camId : " + camId + ", stageId : " + stageId);
         if (CameraManager.cameraId >= 2) {
-            _slider.value = enemyHp;
+            _slider = GameObject.Find(enemy[stageId]).GetComponent<Slider>();
+            Debug.Log("敵 :" + _slider.name + ", myScore : " + myScore + ", myHp : " + myHp);
+            enemyHp = _slider.value;
             // randomPosX = Random.Range(-1.5f,1.5f);
             // randomPosY = Random.Range(-1.5f,1.5f);
-            stageId = CameraManager.cameraId - 2;
-            Debug.Log("myHp => " + myHp + ", enemyHp => " + enemyHp);
+            // Debug.Log("myHp => " + myHp + ", enemyHp => " + enemyHp);
             // 生きている間の処理
             if(myHp > 0) {
                 myScore = 0;
@@ -74,6 +77,7 @@ public class DamageScript: MonoBehaviour {
                     //-------------------- ダメージ計算 ----------------------//
                     myHp -= enemyScore / myDefRate;
                     enemyHp -= myScore / enemyDefRate;
+                    _slider.value = enemyHp;
                 } else {
                     if(!deathFlg){
                         deathFlg = true;
@@ -91,8 +95,7 @@ public class DamageScript: MonoBehaviour {
     public void OnMouseDown (){
         if(enemyHp > 0) {
             myScore = Damage(myStatus[0], enemyDef[stageId]);
-            if (myScore <= 0) myScore = Random.value * 100;
-            Debug.Log("ダメージ : " + myScore);
+            if (myScore <= 0) myScore = 2;
             enemyHp -= myScore / enemyDefRate;
             _slider.value = enemyHp;
         } else {
@@ -116,11 +119,12 @@ public class DamageScript: MonoBehaviour {
             deathFlg = false;
             changeFlg = false;
             stageId++;
-            CameraManager.cameraId++;
-            _slider = GameObject.Find(enemy[stageId]).GetComponent<Slider>();
+            camId++;
+            CameraManager.cameraId = camId;
             enemyHp = _slider.value;
-            myStatus[0] *= 2;
-            myStatus[1] *= 2;
+            myStatus[0] = myStatus[0] + 200;
+            myStatus[1] = myStatus[1] + 200;
+            Debug.Log("camId =>" + CameraManager.cameraId + ", stageId => " + stageId);
         }
     }
 }

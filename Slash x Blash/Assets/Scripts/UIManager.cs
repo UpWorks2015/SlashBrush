@@ -17,8 +17,7 @@ public class UIManager : MonoBehaviour {
 	private float maxHp;
 	private float maxPoint;
 	private float time;
-	float atkTime;
-
+	private float atkTime;
 
 	// Use this for initialization
 	void Start () {
@@ -29,7 +28,7 @@ public class UIManager : MonoBehaviour {
 		_animPointbar = pointbar.GetComponent<Animator>();
 		_animHpbar = hpbar.GetComponent<Animator>();
 		
-		atkTime = 10f;
+		atkTime = DamageScript.atkRoutine[0];
 		maxHp = DamageScript.myHp;
 		maxPoint = DamageScript.actPoint;
 		GameUI.enabled = false;
@@ -41,12 +40,21 @@ public class UIManager : MonoBehaviour {
 
 
 		if (CameraManager.cameraId >= 2 && CameraManager.cameraId < 11) {
+			if(!isSetAll){
+				isSetAll = true;
+				isReset = false;
+				StartCoroutine(isSetFinish());
+				_animHpbar.SetBool("isSetup",true);
+				_animPointbar.SetBool("isSetup",true);
+			}
 
+			atkTime = DamageScript.atkRoutine[DamageScript.stageId];
 			time += Time.deltaTime;
 			enemybar.fillAmount = time/atkTime;
 			
 			if (time >= atkTime) {
 				Debug.Log("enemyAtk!!!!!");
+				DamageScript.isHighatk = true;
 				time = 0;
 			}
 
@@ -56,13 +64,7 @@ public class UIManager : MonoBehaviour {
 			pointbar.fillAmount = DamageScript.actPoint / maxPoint;
 
 
-			if(!isSetAll){
-				isSetAll = true;
-				isReset = false;
-				StartCoroutine(isSetFinish());
-				_animHpbar.SetBool("isSetup",true);
-				_animPointbar.SetBool("isSetup",true);
-			}
+
 			GameUI.enabled = true;
 		}else {
 			if(!isReset){

@@ -7,7 +7,8 @@ public class DamageScript: MonoBehaviour {
     bool locked = false;
 
 	int camId = CameraManager.cameraId;
-	int stageId = 0;
+	public static int stageId = 0;
+	public static bool isHighatk = false;
 
     Slider _slider;
     float _point;
@@ -25,7 +26,7 @@ public class DamageScript: MonoBehaviour {
     float enemyHp;
     float[] enemyAtk = new float[]{ 30f, 40f, 50f, 60f, 70f, 100f, 180f, 260f, 1000f};
     float[] enemyDef = new float[]{ 50f, 80f, 90f, 100f, 140f, 180f, 220f, 260f, 430f};
-	float[] atkRoutine = new float[]{ 5f, 7f, 10f, 6f ,7f, 15f, 3f, 8f, 10f};
+	public static float[] atkRoutine = new float[]{ 5f, 7f, 10f, 6f ,7f, 15f, 3f, 8f, 10f};
 	float[] highDamageRate = new float[]{ 2f, 2.5f, 5f, 2.2f, 2.5f, 7f, 1.5f, 2.7f, 5f};
 
     /* スコア */
@@ -115,6 +116,11 @@ public class DamageScript: MonoBehaviour {
 #endif
                 //----------------- 敵行動ロジック --------------------//
                 if(enemyHp > 0) {
+					if(isHighatk){
+						isHighatk = false;
+						Debug.Log("HighAtk"); 
+						enemyScore = Damage(enemyAtk[stageId], myStatus[1]) * highDamageRate[stageId];
+					}
                     if(Random.value >= 0.995) {
                         enemyScore =  Damage(enemyAtk[stageId], myStatus[1]);
 //                        Debug.Log("enemyScore : " + enemyScore);
@@ -162,7 +168,7 @@ public class DamageScript: MonoBehaviour {
     float getDefRate(float myDef, float enemyAtk) {
         return Mathf.Abs(myDef / enemyAtk);
     }
-
+	
     IEnumerator isStageChange()
     {
         if(!changeFlg) {

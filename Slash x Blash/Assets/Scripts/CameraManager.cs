@@ -18,9 +18,9 @@ public class CameraManager : MonoBehaviour {
 	public  Camera ClearCam;
 	public  Camera GameOverCam;
 
-
 	// Use this for initialization
 	void Start () {
+
 		//Title
 		TitleCam.enabled = true;
 		StageSelectCam.enabled = false;
@@ -84,6 +84,7 @@ public class CameraManager : MonoBehaviour {
 			GameOverCam.enabled = false;
 
 		} else if (cameraId == 2) {
+
 			//Inu
 			TitleCam.enabled = false;
 			StageSelectCam.enabled = false;
@@ -132,6 +133,7 @@ public class CameraManager : MonoBehaviour {
 			GameOverCam.enabled = false;
 
 		} else if (cameraId ==  5) {
+
 			//Buta
 			TitleCam.enabled = false;
 			StageSelectCam.enabled = false;
@@ -180,6 +182,7 @@ public class CameraManager : MonoBehaviour {
 			GameOverCam.enabled = false;
 
 		} else if (cameraId == 8) {
+
 			//Kobito
 			TitleCam.enabled = false;
 			StageSelectCam.enabled = false;

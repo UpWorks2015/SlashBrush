@@ -5,6 +5,8 @@ public class SoundManager : MonoBehaviour {
 	public AudioClip  titleBGM;
 	public AudioClip battleBGM;
 	public AudioClip japaneseBGM;
+	public AudioClip clearBGM;
+	public AudioClip gameOverBGM;
 	public AudioSource audioSource;
 	private int soundId;
 	private bool isPlay = false;
@@ -24,7 +26,7 @@ public class SoundManager : MonoBehaviour {
 				isPlay = true;
 				isSoundChange();
 				soundId++;
-				Debug.Log("SoundChange");
+//				Debug.Log("SoundChange");
 			}
 		}
 	}
@@ -48,15 +50,20 @@ public class SoundManager : MonoBehaviour {
 			audioSource.Play ();
 			break;
 		case 11:
-			Debug.Log("11");
-			Initialize();
+			audioSource.clip = clearBGM;
+			audioSource.Play ();
 			break;
 		case 12:
-			Debug.Log("12");
-			Initialize();
+			audioSource.clip = gameOverBGM;
+			audioSource.Play ();
 			break;
 		}
 		isPlay = false;
+	}
+
+	IEnumerator isRestart(){
+		yield return new WaitForSeconds (5f);
+		Initialize();
 	}
 
 	void Initialize(){

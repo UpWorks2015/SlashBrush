@@ -134,7 +134,7 @@ public class DamageScript: MonoBehaviour {
 
     IEnumerator isStageChange()
     {
-        if(!changeFlg) {
+        if(!changeFlg && camId != 11) {
             changeFlg = true;
             yield return new WaitForSeconds(3.0f);
             deathFlg = false;

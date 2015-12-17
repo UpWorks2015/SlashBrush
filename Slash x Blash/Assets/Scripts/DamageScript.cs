@@ -27,6 +27,7 @@ public class DamageScript: MonoBehaviour {
     float[] enemyDef = new float[]{ 50f, 80f, 90f, 100f, 140f, 180f, 220f, 260f, 430f};
 	float[] atkRoutine = new float[]{ 5f, 7f, 10f, 6f ,7f, 15f, 3f, 8f, 10f};
 	float[] highDamageRate = new float[]{ 2f, 2.5f, 5f, 2.2f, 2.5f, 7f, 1.5f, 2.7f, 5f};
+    float[] enemySkillPoints = new float[]{ 600f, 20f, 10f, 130f, 99f, 109f, 120f, 800f, 3000f};
 
     /* スコア */
     float myScore = 0;
@@ -80,12 +81,13 @@ public class DamageScript: MonoBehaviour {
                     {
                         case "Attack":
                             myScore = Damage(myStatus[0], enemyDef[stageId]);
+                            if (myScore <= 0) myScore = 2;
                             break;
                         case "Defence":
                             myDefRate = getDefRate(myStatus[1], enemyDef[stageId]);
                             break;
                         case "Magic":
-                            myScore = myStatus[2];
+                            myScore = myStatus[2] - enemySkillPoints[stageId];
                             break;
                     }
                     SendEventScript.act = null;
@@ -115,15 +117,12 @@ public class DamageScript: MonoBehaviour {
 #endif
                 //----------------- 敵行動ロジック --------------------//
                 if(enemyHp > 0) {
-                    if(Random.value >= 0.995) {
+                    if(Random.Range(0.0f, 1.0f) >= 0.995) {
                         enemyScore =  Damage(enemyAtk[stageId], myStatus[1]);
-//                        Debug.Log("enemyScore : " + enemyScore);
+                        Debug.Log("敵の攻撃 enemyScore : " + enemyScore);
                     }
                     //-------------------- ダメージ計算 ----------------------//
-                    myHp -= (enemyScore / myDefRate);
-//                    Debug.Log(System.DateTime.Now + " : damaged => " + enemyScore / myDefRate);
-                    enemyHp -= (myScore / enemyDefRate);
-                    _slider.value = enemyHp;
+                    StartCoroutine(HpDown());
                 } else {
                     if(!deathFlg){
                         deathFlg = true;
@@ -151,12 +150,12 @@ public class DamageScript: MonoBehaviour {
     }
 
     float Damage(float atk, float def) {
-        float rate = 1.0f;
-        if(Random.value >= 0.99995) {
+        float rate = Random.Range(0.9f, 1.1f);
+        if(Random.Range(0, 101) <= 5 ) {
             rate = 1.5f;
             Debug.Log(System.DateTime.Now + "Critical Hit!!!!!!");
         }
-        return Mathf.Abs(atk * atk / def - def) * (1.0f + Random.value) * rate;
+        return (atk * atk / def - def) * (1.0f + Random.value) * rate;
     }
 
     float getDefRate(float myDef, float enemyAtk) {
@@ -165,7 +164,7 @@ public class DamageScript: MonoBehaviour {
 
     IEnumerator isStageChange()
     {
-        if(!changeFlg) {
+        if(!changeFlg && camId != 11) {
             changeFlg = true;
             yield return new WaitForSeconds(3.0f);
             deathFlg = false;
@@ -174,9 +173,23 @@ public class DamageScript: MonoBehaviour {
             camId++;
             CameraManager.cameraId = camId;
             enemyHp = _slider.value;
-            myStatus[0] = myStatus[0] * 1.2f;
-            myStatus[1] = myStatus[1] * 1.2f;
-//            Debug.Log(System.DateTime.Now + " camId =>" + CameraManager.cameraId + ", stageId => " + stageId);
+            myStatus[0] = myStatus[0] * Random.Range(0.98f, 1.25f);
+            myStatus[1] = myStatus[1] * Random.Range(0.98f, 1.25f);
+            Debug.Log(System.DateTime.Now + " camId =>" + CameraManager.cameraId + ", stageId => " + stageId);
         }
+    }
+
+    IEnumerator HpDown() {
+      float myDamage = enemyScore / myDefRate;
+      if(myDamage > 0) {
+          myHp -= myDamage;
+      } else if(enemyScore < 0) {
+          myHp -= Random.Range(0, 5);
+      }
+      Debug.Log(System.DateTime.Now + " : damaged => " + enemyScore / myDefRate);
+      enemyHp -= (myScore / enemyDefRate);
+      _slider.value = enemyHp;
+      yield return null;
+      Debug.Log("myHp " + myHp);
     }
 }

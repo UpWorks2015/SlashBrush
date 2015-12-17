@@ -20,11 +20,11 @@ public class ButtonScript : MonoBehaviour {
 	public void Atk() {
 		AtkFlg = true;
 	}
-
+	
 	public void Def() {
 		DefFlg = true;
 	}
-
+	
 	public void Sp() {
 		SpFlg = true;
 	}

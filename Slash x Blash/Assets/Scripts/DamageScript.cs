@@ -15,7 +15,8 @@ public class DamageScript: MonoBehaviour {
     bool changeFlg = false;
 
     // 自分ステータス
-    float myHp;
+	public static float myHp;
+	public static float actPoint;
     // 攻撃力, 防御力, スキルポイント
     float[] myStatus = {100f, 100f, 100f};
 
@@ -24,6 +25,8 @@ public class DamageScript: MonoBehaviour {
     float enemyHp;
     float[] enemyAtk = new float[]{ 30f, 40f, 50f, 60f, 70f, 100f, 180f, 260f, 1000f};
     float[] enemyDef = new float[]{ 50f, 80f, 90f, 100f, 140f, 180f, 220f, 260f, 430f};
+	float[] atkRoutine = new float[]{ 5f, 7f, 10f, 6f ,7f, 15f, 3f, 8f, 10f};
+	float[] highDamageRate = new float[]{ 2f, 2.5f, 5f, 2.2f, 2.5f, 7f, 1.5f, 2.7f, 5f};
 
     /* スコア */
     float myScore = 0;
@@ -32,20 +35,22 @@ public class DamageScript: MonoBehaviour {
     float enemyDefRate = 1;
 
     void Init() {
-        myHp = 1000f;
+        myHp = 100000f;
+		actPoint = 1000f;
         camId = CameraManager.cameraId;
         stageId = camId - 2;
         foreach(var x in enemy) {
             _slider = GameObject.Find(x).GetComponent<Slider>();
             _slider.value = _slider.maxValue;
         }
-        Debug.Log(System.DateTime.Now + " Init()");
+//        Debug.Log(System.DateTime.Now + " Init()");
     }
 
     void Start () {
         anim = GetComponent<Animator>();
         _slider = GameObject.Find(enemy[0]).GetComponent<Slider>();
-        myHp = 1000f;
+        myHp = 100000f;
+		actPoint = 1000f;
         enemyHp = _slider.value;
     }
 
@@ -66,7 +71,9 @@ public class DamageScript: MonoBehaviour {
                 enemyScore = 0;
                 myDefRate = 1;
                 enemyDefRate = 1;
+#if !DEBUG_MODE
                 if(SendEventScript.actFlg){
+					actPoint -= 5f;
                     // Damage(SendEventScript.act,DeathFlg);
                     //----------------------- コマンド処理 ------------------------//
                     switch(SendEventScript.act)
@@ -84,15 +91,37 @@ public class DamageScript: MonoBehaviour {
                     SendEventScript.act = null;
                     SendEventScript.actFlg = false;
                 }
+#else
+				if(DebugManager.debugActflg){
+					actPoint -= 5f;
+					// Damage(SendEventScript.act,DeathFlg);
+					//----------------------- コマンド処理 ------------------------//
+					switch(DebugManager.debugAct)
+					{
+					case "Attack":
+						myScore = Damage(myStatus[0], enemyDef[stageId]);
+						break;
+					case "Defence":
+						myDefRate = getDefRate(myStatus[1], enemyDef[stageId]);
+						break;
+					case "Magic":
+						myScore = myStatus[2];
+						break;
+					}
+					DebugManager.debugAct = null;
+					DebugManager.debugActflg = false;
+				}
+
+#endif
                 //----------------- 敵行動ロジック --------------------//
                 if(enemyHp > 0) {
                     if(Random.value >= 0.995) {
                         enemyScore =  Damage(enemyAtk[stageId], myStatus[1]);
-                        Debug.Log("enemyScore : " + enemyScore);
+//                        Debug.Log("enemyScore : " + enemyScore);
                     }
                     //-------------------- ダメージ計算 ----------------------//
                     myHp -= (enemyScore / myDefRate);
-                    Debug.Log(System.DateTime.Now + " : damaged => " + enemyScore / myDefRate);
+//                    Debug.Log(System.DateTime.Now + " : damaged => " + enemyScore / myDefRate);
                     enemyHp -= (myScore / enemyDefRate);
                     _slider.value = enemyHp;
                 } else {
@@ -111,6 +140,7 @@ public class DamageScript: MonoBehaviour {
 
     public void OnMouseDown (){
         if(enemyHp > 0) {
+
             myScore = Damage(myStatus[0], enemyDef[stageId]);
             if (myScore <= 0) myScore = 2;
             enemyHp -= myScore / enemyDefRate;
@@ -146,7 +176,7 @@ public class DamageScript: MonoBehaviour {
             enemyHp = _slider.value;
             myStatus[0] = myStatus[0] * 1.2f;
             myStatus[1] = myStatus[1] * 1.2f;
-            Debug.Log(System.DateTime.Now + " camId =>" + CameraManager.cameraId + ", stageId => " + stageId);
+//            Debug.Log(System.DateTime.Now + " camId =>" + CameraManager.cameraId + ", stageId => " + stageId);
         }
     }
 }

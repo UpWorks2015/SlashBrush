@@ -60,7 +60,6 @@ public class SendEventScript : MonoBehaviour {
 							ButtonScript.SpFlg = false;
 
 			}
-
 		}
 	}
 	[RPC]
@@ -69,10 +68,11 @@ public class SendEventScript : MonoBehaviour {
 			// 引数のメッセージをローカルの配列にセットする。
 			eventList.Add(msg);
 			Debug.Log(msg.Split(':')[1]);
-			SendAction(msg.Split(':')[0],msg.Split(':')[1]);
+	
+		SendAction(msg.Split(':')[0],msg.Split(':')[1]);
 	}
 
-	static public void SendAction(string player,string actType){
+	public static void SendAction(string player,string actType){
 		if(actType=="atk"){
 			Debug.Log(player + ":Attack");
 			act = "Attack";

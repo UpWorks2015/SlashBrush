@@ -69,13 +69,13 @@ public class DamageScript: MonoBehaviour {
         if (camId == 0) Init();
         if (camId >= 2 && camId < 12) {
             _slider = GameObject.Find(enemy[stageId]).GetComponent<Slider>();
-            Debug.Log("敵 :" + _slider.name + ", myScore : " + myScore + ", myHp : " + myHp + ", myStatus : " + myStatus[0] + " " + myStatus[1]);
+//            Debug.Log("敵 :" + _slider.name + ", myScore : " + myScore + ", myHp : " + myHp + ", myStatus : " + myStatus[0] + " " + myStatus[1]);
             enemyHp = _slider.value;
             // randomPosX = Random.Range(-1.5f,1.5f);
             // randomPosY = Random.Range(-1.5f,1.5f);
             // 生きている間の処理
             if(myHp > 0) {
-                Debug.Log(System.DateTime.Now + "actPoint " + actPoint);
+//                Debug.Log(System.DateTime.Now + "actPoint " + actPoint);
                 myScore = 0;
                 enemyScore = 0;
                 myDefRate = 1;
@@ -168,15 +168,16 @@ public class DamageScript: MonoBehaviour {
                 } else {
                     if(!deathFlg){
                         deathFlg = true;
-                        anim.SetBool("die",true);
+//                        anim.SetBool("die",true);
+						anim.SetTrigger("die");
                         Debug.Log("Enemy down!");
                         StartCoroutine(isStageChange());
                     }
                 }
                 if(actPoint < ACT_POINT_MAX) {
-                    StartCoroutine("ActBarDown");
+					StartCoroutine(ActBarDown());
                 } else {
-                    StopCoroutine("ActBarDown");
+					StopCoroutine(ActBarDown());
                 }
             } else {
                 CameraManager.cameraId = 12;

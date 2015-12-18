@@ -18,6 +18,8 @@ public class CameraManager : MonoBehaviour {
 	public  Camera ClearCam;
 	public  Camera GameOverCam;
 
+	
+
 	// Use this for initialization
 	void Start () {
 
@@ -45,6 +47,7 @@ public class CameraManager : MonoBehaviour {
 			cameraId++;
 		}
 
+	
 		//------- change depth --------//
 		if (cameraId == 1) {
 			StageSelectCam.depth = 1;

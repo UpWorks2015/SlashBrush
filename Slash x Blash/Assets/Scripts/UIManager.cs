@@ -7,9 +7,12 @@ public class UIManager : MonoBehaviour {
 	public Image hpbar;
 	public Image pointbar;
 	public Image enemybar;
+	public Image UIeffect;
 	
+
 	private Animator _animHpbar;
 	private Animator _animPointbar;
+	private Animator _animEffect;
 	
 	private bool isSetAll;
 	private bool isReset;
@@ -27,6 +30,7 @@ public class UIManager : MonoBehaviour {
 		_animHpbar = hpbar.GetComponent<Animator>();
 		_animPointbar = pointbar.GetComponent<Animator>();
 		_animHpbar = hpbar.GetComponent<Animator>();
+		_animEffect = UIeffect.GetComponent<Animator> ();
 		
 		atkTime = DamageScript.atkRoutine[0];
 		maxHp = DamageScript.myHp;
@@ -55,6 +59,8 @@ public class UIManager : MonoBehaviour {
 			if (time >= atkTime) {
 				Debug.Log("enemyAtk!!!!!");
 				DamageScript.isHighatk = true;
+				ShakeCamera.isDamaged = true;
+				_animEffect.SetTrigger("isDamaged");
 				time = 0;
 			}
 
@@ -75,7 +81,8 @@ public class UIManager : MonoBehaviour {
 			}
 		}
 	}
-	
+
+
 	IEnumerator isSetFinish(){
 		yield return new WaitForSeconds (1.2f);
 		_animHpbar.enabled = false;

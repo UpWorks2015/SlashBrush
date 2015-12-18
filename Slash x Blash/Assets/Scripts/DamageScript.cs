@@ -40,8 +40,10 @@ public class DamageScript: MonoBehaviour {
     float enemyDefRate = 1;
 
     void Init() {
-        myHp = 1000f;
+        myHp = 2500f;
 		actPoint = ACT_POINT_MAX;
+        myHp = 2500f;
+		actPoint = 1000f;
         camId = CameraManager.cameraId;
         stageId = camId - 2;
         foreach(var x in enemy) {
@@ -54,7 +56,7 @@ public class DamageScript: MonoBehaviour {
     void Start () {
         anim = GetComponent<Animator>();
         _slider = GameObject.Find(enemy[0]).GetComponent<Slider>();
-        myHp = 1000f;
+        myHp = 2500f;
 		actPoint = ACT_POINT_MAX;
         enemyHp = _slider.value;
         actPointRequire = 0;

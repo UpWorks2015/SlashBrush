@@ -2,44 +2,52 @@ using UnityEngine;
 using System.Collections;
 
 public class ShakeCamera : MonoBehaviour {
-
-	public float shake_decay;
-	public float coef_shake_intensity;
-	private Vector3 originPosition;
-	private Quaternion originRotation;
-	private float shake_intensity;
-
-	bool isShaking = false;
+	public float setShakeTIme; // 持続振動時間
 	
-	void Update ()
-	{  
-		if (shake_intensity > 0) {  
+	private float lifeTime;
+	private Vector3 savePosition;
+	private float lowRangeX;
+	private float maxRangeX;
+	private float lowRangeY; 
+	private float maxRangeY;
 
-			isShaking = true;
 
-			transform.position = originPosition + Random.insideUnitSphere * shake_intensity;  
-			transform.rotation = new Quaternion (
-				originRotation.x + Random.Range (-shake_intensity, shake_intensity) * 2f,  
-				originRotation.y + Random.Range (-shake_intensity, shake_intensity) * 2f,  
-				originRotation.z + Random.Range (-shake_intensity, shake_intensity) * 2f,  
-				originRotation.w + Random.Range (-shake_intensity, shake_intensity) * 2f);  
-			shake_intensity -= shake_decay;  
-		}  
-
-		if(isShaking && shake_intensity <=0) {
-			isShaking =false;
-
-			transform.position = originPosition;
-			transform.rotation = originRotation;
+	public static bool isDamaged = false;
+	
+	void CatchShake( ) {
+		savePosition = transform.position;
+		lowRangeY = savePosition.y - 0.2f;
+		maxRangeY = savePosition.y + 0.2f;
+		lowRangeX = savePosition.x - 0.2f;
+		maxRangeX = savePosition.x + 0.2f;
+		lifeTime = setShakeTIme;
+	}
+	void Start () {
+		if(setShakeTIme <= 0.0f)
+			setShakeTIme = 0.2f;
+		lifeTime = 0.0f;
+	}	
+	
+	void Update () {
+		Debug.Log (lifeTime);
+		if(lifeTime < 0.0f){
+			transform.position = savePosition;
+			lifeTime = 0.0f;
+		}
+		if(lifeTime > 0.0f){
+			isDamaged = false;
+			Debug.Log("Shake");
+			lifeTime -= Time.deltaTime;
+			float x_val = Random.Range(lowRangeX,maxRangeX);
+			float y_val = Random.Range(lowRangeY,maxRangeY);
+			transform.position = new Vector3(x_val,y_val,transform.position.z);
 		}
 
+		if (CameraManager.cameraId >= 2 && CameraManager.cameraId < 11) {
+			if (isDamaged) {
+				lifeTime = 0.2f;
+				CatchShake();
+			}
+		}
 	}
-	
-	public void Shake ()
-	{  
-		originPosition = transform.position;  
-		originRotation = transform.rotation;  
-		shake_intensity = coef_shake_intensity;  
-	}  
-
 }

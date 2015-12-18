@@ -37,7 +37,7 @@ public class DamageScript: MonoBehaviour {
     float enemyDefRate = 1;
 
     void Init() {
-        myHp = 100000f;
+        myHp = 2500f;
 		actPoint = 1000f;
         camId = CameraManager.cameraId;
         stageId = camId - 2;
@@ -51,7 +51,7 @@ public class DamageScript: MonoBehaviour {
     void Start () {
         anim = GetComponent<Animator>();
         _slider = GameObject.Find(enemy[0]).GetComponent<Slider>();
-        myHp = 100000f;
+        myHp = 2500f;
 		actPoint = 1000f;
         enemyHp = _slider.value;
     }
@@ -186,7 +186,7 @@ public class DamageScript: MonoBehaviour {
     }
 
     IEnumerator HpDown() {
-      float myDamage = enemyScore / myDefRate;
+		float myDamage = enemyScore / myDefRate;
       if(myDamage > 0) {
           myHp -= myDamage;
       } else if(enemyScore < 0) {

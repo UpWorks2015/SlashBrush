@@ -96,9 +96,9 @@ public class DamageScript: MonoBehaviour {
                             }
     						break;
                         case "Defence":
-                            actPointRequire += 5f;
+                            actPointRequire += 25f;
                             if(actPoint > actPointRequire) {
-                                myDefRate = getDefRate(myStatus[1], enemyDef[stageId]);
+                                enemyScore = 0;
                             }
     						break;
                         case "Magic":
@@ -106,7 +106,7 @@ public class DamageScript: MonoBehaviour {
                             if(actPoint > actPointRequire) {
                                 myScore = myStatus[2] - enemySkillPoints[stageId];
                                 myHp += 1000f;
-                                myHp = Mathf.Min(1000f, myHp);
+                                // myHp = Mathf.Min(1000f, myHp);
                             }
     						break;
                     }
@@ -123,24 +123,24 @@ public class DamageScript: MonoBehaviour {
 					switch(DebugManager.debugAct)
 					{
 					case "Attack":
-                        actPointRequire += 15f;
+                        actPointRequire += 200f;
                         if(actPoint > actPointRequire) {
                             myScore = Damage(myStatus[0], enemyDef[stageId]);
                             if (myScore <= 0) myScore = 2;
                         }
 						break;
 					case "Defence":
-                        actPointRequire += 5f;
+                        actPointRequire += 400f;
                         if(actPoint > actPointRequire) {
-                            myDefRate = getDefRate(myStatus[1], enemyDef[stageId]);
+                            enemyScore = 0;
                         }
 						break;
 					case "Magic":
                         actPointRequire += 500f;
                         if(actPoint > actPointRequire) {
                             myScore = myStatus[2] - enemySkillPoints[stageId];
-                            myHp += 1000f;
-                            myHp = Mathf.Min(1000f, myHp);
+                            myHp += 500f;
+                            // myHp = Mathf.Min(1000f, myHp);
                         }
 						break;
 					}
@@ -153,22 +153,21 @@ public class DamageScript: MonoBehaviour {
 #endif
                 //----------------- 敵行動ロジック --------------------//
                 if(enemyHp > 0) {
+                    if(Random.Range(0.0f, 1.0f) >= 0.995) {
+                        enemyScore =  Damage(enemyAtk[stageId], myStatus[1]);
+                        Debug.Log("敵の攻撃 enemyScore : " + enemyScore);
+                    }
 					if(isHighatk){
 						isHighatk = false;
 						Debug.Log("HighAtk");
                         enemyScore = Damage(enemyAtk[stageId], myStatus[1]);
 						enemyScore = enemyScore + Mathf.Abs(enemyScore * highDamageRate[stageId]);
 					}
-                    if(Random.Range(0.0f, 1.0f) >= 0.995) {
-                        enemyScore =  Damage(enemyAtk[stageId], myStatus[1]);
-                        Debug.Log("敵の攻撃 enemyScore : " + enemyScore);
-                    }
                     //-------------------- ダメージ計算 ----------------------//
                     StartCoroutine(HpDown());
                 } else {
                     if(!deathFlg){
                         deathFlg = true;
-//                        anim.SetBool("die",true);
 						anim.SetTrigger("die");
                         Debug.Log("Enemy down!");
                         StartCoroutine(isStageChange());
@@ -228,28 +227,27 @@ public class DamageScript: MonoBehaviour {
     }
 
     IEnumerator HpDown() {
-      float myDamage = enemyScore / myDefRate;
-      if(actPointRequire > actPoint) {
-          myScore = 0;
-          myDefRate = 1;
-      } else {
-          actPoint -= actPointRequire;
-      }
-      if(myDamage > 0) {
-          myHp -= myDamage;
-      } else if(enemyScore < 0) {
-          myHp -= Random.Range(0, 5);
-      }
-      Debug.Log(System.DateTime.Now + " : damaged => " + enemyScore / myDefRate);
-      enemyHp -= (myScore / enemyDefRate);
-      _slider.value = enemyHp;
-      yield return null;
-      Debug.Log("myHp " + myHp);
+        float myDamage = enemyScore / myDefRate;
+        if(actPointRequire > actPoint) {
+            myScore = 0;
+            myDefRate = 1;
+        } else {
+            actPoint -= actPointRequire;
+        }
+        if(myDamage > 0) {
+            myHp -= myDamage;
+        } else if(enemyScore < 0) {
+            myHp -= Random.Range(0, 5);
+        }
+        Debug.Log(System.DateTime.Now + " : damaged => " + enemyScore / myDefRate);
+        enemyHp -= (myScore / enemyDefRate);
+        _slider.value = enemyHp;
+        yield return null;
     }
 
     IEnumerator ActBarDown() {
         // yield return new WaitForSeconds(2.0f);
-//        actPoint += 0.2f;
+        actPoint += 0.2f;
         yield return null;
     }
 }

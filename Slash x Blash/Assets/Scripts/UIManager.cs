@@ -44,13 +44,18 @@ public class UIManager : MonoBehaviour {
 
 
 		if (CameraManager.cameraId >= 2 && CameraManager.cameraId < 11) {
+
 			if(!isSetAll){
+				maxHp = DamageScript.myHp;
+				maxPoint = DamageScript.actPoint;
 				isSetAll = true;
 				isReset = false;
 				StartCoroutine(isSetFinish());
 				_animHpbar.SetBool("isSetup",true);
 				_animPointbar.SetBool("isSetup",true);
 			}
+
+
 
 			atkTime = DamageScript.atkRoutine[DamageScript.stageId];
 			time += Time.deltaTime;
@@ -60,12 +65,14 @@ public class UIManager : MonoBehaviour {
 				Debug.Log("enemyAtk!!!!!");
 				DamageScript.isHighatk = true;
 				ShakeCamera.isDamaged = true;
+
 				_animEffect.SetTrigger("isDamaged");
 				time = 0;
 			}
 
 
 			hpbar.fillAmount =  DamageScript.myHp / maxHp;
+			Debug.Log(DamageScript.myHp + "/" + maxHp);
 
 			pointbar.fillAmount = DamageScript.actPoint / maxPoint;
 

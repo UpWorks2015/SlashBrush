@@ -52,17 +52,19 @@ public class SoundManager : MonoBehaviour {
 		case 11:
 			audioSource.clip = clearBGM;
 			audioSource.Play ();
+			StartCoroutine(isRestart());
 			break;
 		case 12:
 			audioSource.clip = gameOverBGM;
 			audioSource.Play ();
+			StartCoroutine(isRestart());
 			break;
 		}
 		isPlay = false;
 	}
 
 	IEnumerator isRestart(){
-		yield return new WaitForSeconds (5f);
+		yield return new WaitForSeconds (6f);
 		Initialize();
 	}
 

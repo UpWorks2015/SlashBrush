@@ -25,7 +25,7 @@ public class DamageScript: MonoBehaviour {
     float[] myStatus = {100f, 100f, 100f};
 
     // 敵ステータス
-    string[] enemy = new string[] { "InuSlider", "SaruSlider", "KijiSlider", "ButaSlider", "songokuSlider", "sanzouSlider", "KobitoSlider", "MamaSlider", "OujiSlider"};
+    string[] enemy = new string[] { "InuSlider", "SaruSlider", "KijiSlider", "ButaSlider", "GokuSlider", "sanzouSlider", "KobitoSlider", "MamaSlider", "OujiSlider"};
     float enemyHp;
     float[] enemyAtk = new float[]{ 30f, 40f, 50f, 60f, 70f, 100f, 180f, 260f, 1000f};
     float[] enemyDef = new float[]{ 50f, 80f, 90f, 100f, 140f, 180f, 220f, 260f, 430f};
@@ -175,9 +175,9 @@ public class DamageScript: MonoBehaviour {
                     }
                 }
                 if(actPoint < ACT_POINT_MAX) {
-					StartCoroutine(ActBarDown());
+					StartCoroutine("ActBarDown");
                 } else {
-					StopCoroutine(ActBarDown());
+					StopCoroutine("ActBarDown");
                 }
             } else {
                 CameraManager.cameraId = 12;
@@ -249,7 +249,7 @@ public class DamageScript: MonoBehaviour {
 
     IEnumerator ActBarDown() {
         // yield return new WaitForSeconds(2.0f);
-        actPoint += 0.2f;
+//        actPoint += 0.2f;
         yield return null;
     }
 }

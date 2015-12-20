@@ -3,6 +3,10 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
+	public AudioClip attack;
+	public AudioClip ko;
+	public AudioSource audio;
+
 	public Canvas GameUI;
 	public Image hpbar;
 	public Image pointbar;
@@ -22,10 +26,13 @@ public class UIManager : MonoBehaviour {
 	private float time;
 	private float atkTime;
 
+	private bool isEnemydown;
+
 	// Use this for initialization
 	void Start () {
 		isSetAll = false;
 		isReset = true;
+		isEnemydown = false;
 
 		_animHpbar = hpbar.GetComponent<Animator>();
 		_animPointbar = pointbar.GetComponent<Animator>();
@@ -57,17 +64,27 @@ public class UIManager : MonoBehaviour {
 
 
 
-			atkTime = DamageScript.atkRoutine[DamageScript.stageId];
-			time += Time.deltaTime;
-			enemybar.fillAmount = time/atkTime;
-			
-			if (time >= atkTime) {
-				Debug.Log("enemyAtk!!!!!");
-				DamageScript.isHighatk = true;
-				ShakeCamera.isDamaged = true;
-
-				_animEffect.SetTrigger("isDamaged");
+			atkTime = DamageScript.atkRoutine[CameraManager.cameraId-2];
+			if(DamageScript.enemyHp > 0){
+				isEnemydown = false;
+				time += Time.deltaTime;
+				enemybar.fillAmount = time/atkTime;
+				if (time >= atkTime) {
+					audio.clip = attack;
+					audio.Play ();
+					Debug.Log("enemyAtk!!!!!");
+					DamageScript.isHighatk = true;
+					ShakeCamera.isDamaged = true;
+					_animEffect.SetTrigger("isDamaged");
+					time = 0;
+				}
+			}else{
 				time = 0;
+				if(!isEnemydown){
+					isEnemydown = true;
+					StartCoroutine(isDown());
+				}
+				
 			}
 
 
@@ -83,10 +100,16 @@ public class UIManager : MonoBehaviour {
 			if(!isReset){
 				isReset = true;
 				isSetAll = false;
+				isEnemydown = false;
 				GameUI.enabled = false;
 				Debug.Log ("Reset");
 			}
 		}
+	}
+	IEnumerator isDown(){
+		yield return new WaitForSeconds (2.8f);
+		audio.clip = ko;
+		audio.Play ();
 	}
 
 

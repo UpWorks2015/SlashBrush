@@ -10,6 +10,7 @@ public class SoundManager : MonoBehaviour {
 	public AudioSource audioSource;
 	private int soundId;
 	private bool isPlay = false;
+		
 
 	// Use this for initialization
 	void Start ()  {

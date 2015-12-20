@@ -47,6 +47,10 @@ public class CameraManager : MonoBehaviour {
 			cameraId++;
 		}
 
+		if (Input.GetKeyDown ("p")) {
+			Application.LoadLevel("controller");
+		}
+
 	
 		//------- change depth --------//
 		if (cameraId == 1) {

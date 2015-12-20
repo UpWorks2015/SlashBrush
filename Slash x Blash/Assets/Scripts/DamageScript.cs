@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class DamageScript: MonoBehaviour {
-    private Animator anim;
-    bool locked = false;
-
+    public Animator anim;
+  
 	int camId = CameraManager.cameraId;
 	public static int stageId = 0;
 	public static bool isHighatk = false;
@@ -25,8 +24,8 @@ public class DamageScript: MonoBehaviour {
     float[] myStatus = {100f, 100f, 100f};
 
     // 敵ステータス
-    string[] enemy = new string[] { "InuSlider", "SaruSlider", "KijiSlider", "ButaSlider", "GokuSlider", "sanzouSlider", "KobitoSlider", "MamaSlider", "OujiSlider"};
-    float enemyHp;
+    string[] enemy = new string[] { "InuSlider", "SaruSlider", "KijiSlider", "ButaSlider", "GokuSlider", "SanzoSlider", "KobitoSlider", "MamaSlider", "OujiSlider"};
+    public static float enemyHp;
     float[] enemyAtk = new float[]{ 30f, 40f, 50f, 60f, 70f, 100f, 180f, 260f, 1000f};
     float[] enemyDef = new float[]{ 50f, 80f, 90f, 100f, 140f, 180f, 220f, 260f, 430f};
 	public static float[] atkRoutine = new float[]{ 5f, 7f, 10f, 6f ,7f, 15f, 3f, 8f, 10f};
@@ -65,7 +64,7 @@ public class DamageScript: MonoBehaviour {
     void Update () {
         camId = CameraManager.cameraId;
         stageId = camId - 2;
-        Debug.Log("camId : " + camId + ", stageId : " + stageId);
+//        Debug.Log("camId : " + camId + ", stageId : " + stageId);
         if (camId == 0) Init();
         if (camId >= 2 && camId < 12) {
             _slider = GameObject.Find(enemy[stageId]).GetComponent<Slider>();
@@ -93,20 +92,29 @@ public class DamageScript: MonoBehaviour {
                             if(actPoint > actPointRequire) {
                                 myScore = Damage(myStatus[0], enemyDef[stageId]);
                                 if (myScore <= 0) myScore = 2;
+//								SoundManager.seAudioSource.clip = SoundManager.attackSE;
+//								SoundManager.seAudioSource.Play ();
+								anim.SetTrigger("damage");
                             }
     						break;
                         case "Defence":
-                            actPointRequire += 5f;
+                            actPointRequire += 25f;
                             if(actPoint > actPointRequire) {
-                                myDefRate = getDefRate(myStatus[1], enemyDef[stageId]);
+							enemyScore = 0;
+//                                myDefRate = getDefRate(myStatus[1], enemyDef[stageId]);
+//								SoundManager.seAudioSource.clip = SoundManager.defenceSE;
+//								SoundManager.seAudioSource.Play ();
                             }
     						break;
                         case "Magic":
                             actPointRequire += 500f;
                             if(actPoint > actPointRequire) {
                                 myScore = myStatus[2] - enemySkillPoints[stageId];
-                                myHp += 1000f;
+                                myHp += 500f;
                                 myHp = Mathf.Min(1000f, myHp);
+								anim.SetTrigger("damage");
+//								SoundManager.seAudioSource.clip = SoundManager.magicSE;
+//								SoundManager.seAudioSource.Play ();
                             }
     						break;
                     }
@@ -118,7 +126,7 @@ public class DamageScript: MonoBehaviour {
 #else
 				if(DebugManager.debugActflg){
                     actPointRequire = 5f;
-					Debug.Log(System.DateTime.Now + DebugManager.debugAct);
+//					Debug.Log(System.DateTime.Now + DebugManager.debugAct);
 					//----------------------- コマンド処理 ------------------------//
 					switch(DebugManager.debugAct)
 					{
@@ -127,20 +135,29 @@ public class DamageScript: MonoBehaviour {
                         if(actPoint > actPointRequire) {
                             myScore = Damage(myStatus[0], enemyDef[stageId]);
                             if (myScore <= 0) myScore = 2;
+//							SoundManager.seAudioSource.clip = SoundManager.attackSE;
+//							SoundManager.seAudioSource.Play ();
+							anim.SetTrigger("damage");
                         }
 						break;
 					case "Defence":
-                        actPointRequire += 5f;
+                        actPointRequire += 25f;
                         if(actPoint > actPointRequire) {
-                            myDefRate = getDefRate(myStatus[1], enemyDef[stageId]);
+//                            myDefRate = getDefRate(myStatus[1], enemyDef[stageId]);
+							enemyScore = 0;
+//							SoundManager.seAudioSource.clip = SoundManager.defenceSE;
+//							SoundManager.seAudioSource.Play ();
                         }
 						break;
 					case "Magic":
                         actPointRequire += 500f;
                         if(actPoint > actPointRequire) {
                             myScore = myStatus[2] - enemySkillPoints[stageId];
-                            myHp += 1000f;
+                            myHp += 500f;
                             myHp = Mathf.Min(1000f, myHp);
+							anim.SetTrigger("damage");
+//							SoundManager.seAudioSource.clip = SoundManager.magicSE;
+//							SoundManager.seAudioSource.Play ();
                         }
 						break;
 					}
@@ -153,23 +170,24 @@ public class DamageScript: MonoBehaviour {
 #endif
                 //----------------- 敵行動ロジック --------------------//
                 if(enemyHp > 0) {
+					if(Random.Range(0.0f, 1.0f) >= 0.995) {
+						enemyScore =  Damage(enemyAtk[stageId], myStatus[1]);
+						Debug.Log("敵の攻撃 enemyScore : " + enemyScore);
+					}
 					if(isHighatk){
 						isHighatk = false;
+						anim.SetTrigger("attack");
 						Debug.Log("HighAtk");
                         enemyScore = Damage(enemyAtk[stageId], myStatus[1]);
 						enemyScore = enemyScore + Mathf.Abs(enemyScore * highDamageRate[stageId]);
 					}
-                    if(Random.Range(0.0f, 1.0f) >= 0.995) {
-                        enemyScore =  Damage(enemyAtk[stageId], myStatus[1]);
-                        Debug.Log("敵の攻撃 enemyScore : " + enemyScore);
-                    }
                     //-------------------- ダメージ計算 ----------------------//
                     StartCoroutine(HpDown());
                 } else {
                     if(!deathFlg){
                         deathFlg = true;
-//                        anim.SetBool("die",true);
 						anim.SetTrigger("die");
+//						EnemyManager.motion = "die";
                         Debug.Log("Enemy down!");
                         StartCoroutine(isStageChange());
                     }
@@ -214,11 +232,15 @@ public class DamageScript: MonoBehaviour {
     {
         if(!changeFlg && camId != 11) {
             changeFlg = true;
-            yield return new WaitForSeconds(3.0f);
+            yield return new WaitForSeconds(3.2f);
             deathFlg = false;
             changeFlg = false;
             stageId++;
-            camId++;
+			if(camId == 4 ||camId == 7||camId == 9){
+				camId = 11;
+			}else{
+				camId++;
+			}
             CameraManager.cameraId = camId;
             enemyHp = _slider.value;
             myStatus[0] = myStatus[0] * Random.Range(0.98f, 1.25f);

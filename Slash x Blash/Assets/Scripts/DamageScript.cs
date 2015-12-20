@@ -176,7 +176,7 @@ public class DamageScript: MonoBehaviour {
 						anim.SetTrigger("attack");
 						Debug.Log("HighAtk");
                         enemyScore = Damage(enemyAtk[stageId], myStatus[1]);
-						enemyScore = enemyScore + Mathf.Abs(enemyScore * highDamageRate[stageId]);
+						enemyScore = Mathf.Abs(Damage(enemyAtk[stageId], myStatus[1]) * highDamageRate[stageId]);
 					}
                     //-------------------- ダメージ計算 ----------------------//
                     StartCoroutine(HpDown());
